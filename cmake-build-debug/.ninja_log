@@ -1,0 +1,4 @@
+# ninja log v6
+16	102	7512272941635574	CMakeFiles/PHILO.dir/philo/test.c.obj	8520f6c4555368a1
+3	105	7512272941493844	CMakeFiles/PHILO.dir/philo/actions.c.obj	9f608ef1589a04d4
+10	118	7512272941564985	CMakeFiles/PHILO.dir/philo/philo.c.obj	42fb326950f6269f
