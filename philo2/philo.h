@@ -17,7 +17,7 @@ typedef struct	s_philosopher
 	int				left_fork;
 	int				right_fork;
 	ssize_t			last_meal;
-	struct s_philo 	philo;
+	struct s_philo 	philo_set;
 	pthread_t		thread_id;
 }	t_philosopher;
 
