@@ -102,6 +102,52 @@ void	initialize_philo(t_philo *philo, char **av)
 	return ;
 }
 
+ssize_t check_all_satisfaction(t_philo *philo)
+{
+	
+}
+
+void	*eating(t_philosopher	*philosopher)
+{
+
+}
+
+void	*sleeping(t_philosopher	*philosopher)
+{
+
+}
+
+void	*thinking(t_philosopher	*philosopher)
+{
+
+}
+
+void	action(t_philo *philo, t_philosopher	*philosopher)
+{
+
+}
+
+ssize_t	start_philo(t_philo *philo)
+{
+	int	i;
+
+	i = 0;
+	while(check_all_satisfaction(philo) == 0)
+	{
+		i = 0;
+		while (i < philo->nb_of_philos)
+		{
+			if (pthread_create(&(philo->philosopher[i].thread_id), NULL, eating(&(philo->philosopher[i])), NULL) != 0)
+				return (-1);
+			if (pthread_create(&(philo->philosopher[i].thread_id), NULL, sleeping(&(philo->philosopher[i])), NULL) != 0)
+				return (-1);
+			if (pthread_create(&(philo->philosopher[i].thread_id), NULL, thinking(&(philo->philosopher[i])), NULL) != 0)
+				return (-1);
+			i++;
+		}
+	}
+}
+
 int main(int ac, char **av)
 {
 	t_philo	philo;
@@ -115,5 +161,8 @@ int main(int ac, char **av)
 		if (philo.satisfaction <= 0)
 			exitfree(&philo, "No meals? :(\n", 2, 1);
 	}
-	
+	if (start_philo(&philo) != 0)
+	{
+
+	}
 }
