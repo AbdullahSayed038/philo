@@ -7,6 +7,7 @@
 # include <stdlib.h>
 # include <string.h>
 # include <pthread.h>
+# include <limits.h>
 
 struct s_philo;
 
@@ -32,9 +33,9 @@ typedef struct	s_philo
 	int					dead;
 	int					satisfaction;
 	ssize_t				start_time;
-	pthread_mutext_t	meal_counter;
-	pthread_mutext_t	fork[250];
-	pthread_mutext_t	printing;
+	pthread_mutex_t		meal_counter;
+	pthread_mutex_t		fork[250];
+	pthread_mutex_t		printing;
 	t_philosopher		philosopher[250];
 }	t_philo;
 

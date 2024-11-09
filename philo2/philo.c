@@ -37,13 +37,13 @@ int	ft_atoi_philo(char *str)
 		i++;
 	while (*str)
 	{
-		if ((str[i] >= '0' && str[i] <= '9') && nb <= INT_MAX)
+		if ((str[i] >= '0' && str[i] <= '9') && nb <= 2147483647)
 			nb = nb * 10 + (str[i] - '0');
 		else
 			break;
 		i++;
 	}
-	if (nb > INT_MAX)
+	if (nb > 2147483647)
 		return (-1);
 	return (nb);
 }
@@ -58,7 +58,7 @@ void	initialize_philosophers(t_philo *philo)
 	while (i >= 0)
 	{
 		philo->philosopher[i].id = i;
-		philo->philosopher[i].last_meal = 0;
+		philo->philosopher[i].last_meal = philo->start_time;
 		philo->philosopher[i].left_fork = i;
 		philo->philosopher[i].right_fork = (i + 1) % nb_of_philo;
 		philo->philosopher[i].meals = 0;
@@ -102,28 +102,83 @@ void	initialize_philo(t_philo *philo, char **av)
 	return ;
 }
 
+void	sleep_the_action(int time)
+{
+	usleep(time * 1000);
+}
+
+
+ssize_t get_current_time(void)
+{
+    struct	timeval	tv;
+
+	gettimeofday(&tv, NULL);
+	return (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
+}
+
+ssize_t	get_current_program_time(t_philo *philo)
+{
+	ssize_t	current_time;
+
+	current_time = (get_current_time() - philo->start_time);
+}
+
 ssize_t check_all_satisfaction(t_philo *philo)
 {
 	
 }
 
-void	*eating(t_philosopher	*philosopher)
+ssize_t	time_taken(t_philosopher *philosopher, t_philo *philo)
+{
+	ssize_t	time;
+
+	time = get_current_program_time(philo);
+	if (time - philosopher->last_meal > philo->time_to_die)
+		return (1);
+	return (0) 
+}
+
+void	eating(t_philosopher	*philosopher, t_philo *philo, int index)
+{
+	pthread_mutex_lock(philosopher->left_fork);
+	pthread_mutex_lock(philosopher->right_fork);
+	if (time_taken(philosopher, philo) != 0)
+	{
+
+	}
+	action(philo, philosopher, index + 1, "eating");
+	sleep_the_action(philo->time_to_eat);
+	if (time_taken(philosopher, philo) != 0)
+	{
+
+	}
+	pthread_mutex_unlock(philosopher->left_fork);
+	pthread_mutex_unlock(philosopher->right_fork);
+}
+
+void	sleeping(t_philosopher	*philosopher, t_philo *philo, int index)
 {
 
 }
 
-void	*sleeping(t_philosopher	*philosopher)
+void	thinking(t_philosopher	*philosopher, t_philo *philo, int index)
 {
 
 }
 
-void	*thinking(t_philosopher	*philosopher)
+void	action(t_philo *philo, t_philosopher *philosopher, int nb, const char const *str)
 {
-
+	pthread_mutex_lock(&philo->printing);
+	printf("Philosopher %i is %s.\n", nb, str);
+	pthread_mutex_unlock(&philo->printing);
 }
 
-void	action(t_philo *philo, t_philosopher	*philosopher)
+void	*life(t_philosopher *)
 {
+	while (death_alarm() != 0)
+	{
+		
+	}
 
 }
 
@@ -137,13 +192,8 @@ ssize_t	start_philo(t_philo *philo)
 		i = 0;
 		while (i < philo->nb_of_philos)
 		{
-			if (pthread_create(&(philo->philosopher[i].thread_id), NULL, eating(&(philo->philosopher[i])), NULL) != 0)
+			if (pthread_create(&(philo->philosopher[i].thread_id), NULL, life(&(philo->philosopher[i]), philo, i), NULL) != 0)
 				return (-1);
-			if (pthread_create(&(philo->philosopher[i].thread_id), NULL, sleeping(&(philo->philosopher[i])), NULL) != 0)
-				return (-1);
-			if (pthread_create(&(philo->philosopher[i].thread_id), NULL, thinking(&(philo->philosopher[i])), NULL) != 0)
-				return (-1);
-			i++;
 		}
 	}
 }
@@ -152,13 +202,13 @@ int main(int ac, char **av)
 {
 	t_philo	philo;
 
-	if (ac != 5 && ac != 6)
+	if (ac != 5 || ac != 6)
 		exitfree(&philo, "Invalid Arguments\n", 2, 1);
 	initialize_philo(&philo, av);
 	if (ac == 6)
 	{
-		philo.satisfaction = ft_atoi_philo(av[5]);
-		if (philo.satisfaction <= 0)
+		philo.meals = ft_atoi_philo(av[5]);
+		if (philo.meals <= 0)
 			exitfree(&philo, "No meals? :(\n", 2, 1);
 	}
 	if (start_philo(&philo) != 0)
