@@ -167,13 +167,13 @@ void	eating(t_philosopher	*philosopher, t_philo *philo, int index)
 		{
 			pthread_mutex_lock(&philo->fork[philosopher->left_fork]);
 			philosopher->left_fork = 1;
-			action(philo, philosopher, index + 1, "has taken left fork");
+			action(philo, philosopher, index + 1, "has taken a fork");
 		}
 		if (philosopher->right_fork != 1)
 		{
 			philosopher->right_fork = 1;
 			pthread_mutex_lock(&philo->fork[philosopher->right_fork]);
-			action(philo, philosopher, index + 1, "has taken right fork");
+			action(philo, philosopher, index + 1, "has taken a fork");
 		}
 	}
 	if (time_taken(philosopher, philo) != 0)
@@ -289,6 +289,7 @@ ssize_t start_philo(t_philo *philo)
 			return (-1);
 		}
 		i++;
+		sleep_the_action(1);
 	}
 	i = 0;
 	while (i < philo->nb_of_philos)
