@@ -18,7 +18,7 @@ typedef struct	s_philosopher
 	int				left_fork;
 	int				right_fork;
 	ssize_t			last_meal;
-	struct s_philo 	philo_set;
+	struct s_philo	philo_set;
 	pthread_t		thread_id;
 }	t_philosopher;
 
@@ -34,6 +34,7 @@ typedef struct	s_philo
 	int					satisfaction;
 	ssize_t				start_time;
 	pthread_mutex_t		meal_counter;
+	pthread_mutex_t		death_checker;
 	pthread_mutex_t		fork[250];
 	pthread_mutex_t		printing;
 	t_philosopher		philosopher[250];
