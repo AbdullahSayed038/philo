@@ -101,11 +101,14 @@ void	initialize_philo(t_philo *philo, char **av)
 	return ;
 }
 
-void	set_death(t_philo *philo, t_philosopher *philosopher, size_t index)
+void 	set_death(t_philo *philo, t_philosopher *philosopher, size_t index)
 {
 	pthread_mutex_lock(&philo->death_checker);
-	philo->dead = 1;
-	action(philo, philosopher, index + 1, "has died");
+	if (philo->dead == 0)
+	{
+		philo->dead = 1;
+		action(philo, philosopher, index + 1, "has died");
+	}
 	pthread_mutex_unlock(&philo->death_checker);
 }
 
@@ -146,14 +149,14 @@ ssize_t check_all_satisfaction(t_philo *philo)
 	return (0);
 }
 
-ssize_t	time_taken(t_philosopher *philosopher, t_philo *philo)
+ssize_t time_taken(t_philosopher *philosopher, t_philo *philo)
 {
-	ssize_t	time;
-
+	ssize_t time;
+	
 	time = get_current_program_time(philo);
 	if (time - philosopher->last_meal > philo->time_to_die)
-		return (1);
-	return (0) ;
+		return 1;
+	return 0;
 }
 
 void	eating(t_philosopher	*philosopher, t_philo *philo, int index)
@@ -179,9 +182,9 @@ void	eating(t_philosopher	*philosopher, t_philo *philo, int index)
 		return ;
 	}
 	action(philo, philosopher, index + 1, "is eating");
+	philosopher->last_meal = get_current_program_time(philo);
 	sleep_the_action(philo->time_to_eat);
 	philosopher->meals++;
-	philosopher->last_meal = get_current_program_time(philo);
 	if (time_taken(philosopher, philo) != 0)
 	{
 		set_death(philo, philosopher, index);
@@ -223,8 +226,8 @@ void	action(t_philo *philo, t_philosopher *philosopher, int nb, const char *str)
 
 	(void)philosopher;
 	time = get_current_program_time(philo);
-	if (death_alarm(philo) != 0)
-		return ;
+	if (death_alarm(philo) == 0)
+		return;
 	pthread_mutex_lock(&philo->printing);
 	printf("%zi      Philosopher %i is %s.\n", time, nb, str);
 	pthread_mutex_unlock(&philo->printing);
@@ -236,14 +239,22 @@ ssize_t	death_alarm(t_philo *philo)
 		return (-1);
 	pthread_mutex_lock(&philo->death_checker);
 	if (philo->dead != 0)
+	{
+		pthread_mutex_unlock(&philo->death_checker);
 		return (1);
+	}
 	pthread_mutex_unlock(&philo->death_checker);
 	return (0);
 }
 
-void	*life(void *something)
+void *life(void *args)
 {
-	while ((death_alarm(philo) != 0) && (philosopher->meals != philo->meals))
+	t_life_args *life_args = (t_life_args *)args;
+	t_philosopher *philosopher = life_args->philosopher;
+	t_philo *philo = life_args->philo;
+	int index = life_args->index;
+
+	while (death_alarm(philo) == 0 && (philo->satisfaction != -1 || philosopher->meals != philo->satisfaction))
 	{
 		if (death_alarm(philo) != 0)
 			return NULL;
@@ -258,15 +269,25 @@ void	*life(void *something)
 	return NULL;
 }
 
-ssize_t	start_philo(t_philo *philo)
+ssize_t start_philo(t_philo *philo)
 {
-	int	i;
+	int i;
+	t_life_args *args;
 
 	i = 0;
 	while (i < philo->nb_of_philos)
 	{
-		if (pthread_create(&(philo->philosopher[i].thread_id), NULL, life, philo) != 0)
+		args = malloc(sizeof(t_life_args));
+		if (!args)
 			return (-1);
+		args->philosopher = &philo->philosopher[i];
+		args->philo = philo;
+		args->index = i;
+		if (pthread_create(&(philo->philosopher[i].thread_id), NULL, life, args) != 0)
+		{
+			free(args);
+			return (-1);
+		}
 		i++;
 	}
 	i = 0;
@@ -278,6 +299,7 @@ ssize_t	start_philo(t_philo *philo)
 	}
 	return (0);
 }
+
 
 int main(int ac, char **av)
 {

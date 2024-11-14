@@ -11,6 +11,7 @@
 
 struct s_philo;
 
+
 typedef struct	s_philosopher
 {
 	int				id;
@@ -39,6 +40,11 @@ typedef struct	s_philo
 	t_philosopher		philosopher[250];
 }	t_philo;
 
+typedef struct s_life_args {
+	t_philosopher *philosopher;
+	t_philo *philo;
+	int index;
+} t_life_args;
 
 ssize_t	ft_strlen(char *str);
 void	exitfree(t_philo *philo, char *msg, int fd, int exit_code);
@@ -57,7 +63,7 @@ void	sleeping(t_philosopher	*philosopher, t_philo *philo, int index);
 void	thinking(t_philosopher	*philosopher, t_philo *philo, int index);
 void	action(t_philo *philo, t_philosopher *philosopher, int nb, const char *str);
 ssize_t	death_alarm(t_philo *philo);
-void	*life(t_philosopher *philosopher, t_philo *philo, int index);
+void *life(void *args);
 ssize_t	start_philo(t_philo *philo);
 
 
