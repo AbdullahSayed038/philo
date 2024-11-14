@@ -18,7 +18,6 @@ typedef struct	s_philosopher
 	int				left_fork;
 	int				right_fork;
 	ssize_t			last_meal;
-	struct s_philo	philo_set;
 	pthread_t		thread_id;
 }	t_philosopher;
 
@@ -39,5 +38,27 @@ typedef struct	s_philo
 	pthread_mutex_t		printing;
 	t_philosopher		philosopher[250];
 }	t_philo;
+
+
+ssize_t	ft_strlen(char *str);
+void	exitfree(t_philo *philo, char *msg, int fd, int exit_code);
+int	ft_atoi_philo(char *str);
+void	initialize_philosophers(t_philo *philo);
+ssize_t	initialize_mutex_locks(t_philo *philo);
+void	initialize_philo(t_philo *philo, char **av);
+void	set_death(t_philo *philo, t_philosopher *philosopher, size_t index);
+void	sleep_the_action(int time);
+ssize_t get_current_time(void);
+ssize_t	get_current_program_time(t_philo *philo);
+ssize_t check_all_satisfaction(t_philo *philo);
+ssize_t	time_taken(t_philosopher *philosopher, t_philo *philo);
+void	eating(t_philosopher	*philosopher, t_philo *philo, int index);
+void	sleeping(t_philosopher	*philosopher, t_philo *philo, int index);
+void	thinking(t_philosopher	*philosopher, t_philo *philo, int index);
+void	action(t_philo *philo, t_philosopher *philosopher, int nb, const char *str);
+ssize_t	death_alarm(t_philo *philo);
+void	*life(t_philosopher *philosopher, t_philo *philo, int index);
+ssize_t	start_philo(t_philo *philo);
+
 
 #endif
