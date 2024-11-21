@@ -159,7 +159,7 @@ ssize_t time_taken(t_philosopher *philosopher, t_philo *philo)
 	return 0;
 }
 
-void	eating(t_philosopher	*philosopher, t_philo *philo, int index)
+void	eating(t_philosopher *philosopher, t_philo *philo, int index)
 {
 	while (philosopher->left_fork != 1 && philosopher->right_fork != 1)
 	{
