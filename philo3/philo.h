@@ -43,4 +43,7 @@ typedef struct s_life_args
 	t_philosopher	*philosopher;
 } t_life_args;
 
+ssize_t time_taken(t_philosopher *philosopher, t_input *philo);
+void 	set_death(t_input *philo, t_philosopher *philosopher, size_t index);
+
 #endif

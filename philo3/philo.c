@@ -17,10 +17,28 @@ ssize_t	get_current_program_time(t_input *philo)
 	return (current_time);
 }
 
-void	sleep_the_action(int time)
+void sleep_the_action(int time_in_ms, t_philosopher *philosopher, t_input *input)
 {
-	usleep(time * 1000);
+	int	remaining_time;
+	int	interval;
+
+	remaining_time = time_in_ms * 1000;
+	while (remaining_time > 0)
+	{
+		if (remaining_time >= 5000)
+			interval = 5000;
+		else
+			interval = remaining_time;
+		usleep(interval);
+		remaining_time -= interval;
+		if (time_taken(philosopher, input) != 0)
+		{
+			set_death(input, philosopher, philosopher->id);
+			return;
+		}
+	}
 }
+
 
 void	action(t_input *philo, t_philosopher *philosopher, int nb, const char *str)
 {
@@ -56,8 +74,17 @@ void	*safe_malloc(size_t bytes)
 	return (malloced_buffer);
 }
 
+void	unset_mutex(t_input *input, t_philosopher *philospher)
+{
+	if (pthread_mutex_trylock(&input->fork[philospher->left_fork]) == 0)
+		pthread_mutex_unlock(&input->fork[philospher->left_fork]);
+	if (pthread_mutex_trylock(&input->fork[philospher->right_fork]) == 0)
+		pthread_mutex_unlock(&input->fork[philospher->right_fork]);
+}
+
 void 	set_death(t_input *philo, t_philosopher *philosopher, size_t index)
 {
+	unset_mutex(philo, philosopher);
 	pthread_mutex_lock(&philo->check_death);
 	if (philo->dead == 0)
 	{
@@ -171,7 +198,7 @@ void	eat(t_philosopher *philosopher, t_input *input, int index)
 	action(input, philosopher, index + 1, "is eating");
 	philosopher->meals_had++;
 	philosopher->time_of_last_meal = get_current_program_time(input);
-	sleep_the_action(input->time_to_eat);
+	sleep_the_action(input->time_to_eat, philosopher, input);
 	if (time_taken(philosopher, input) != 0)
 	{
 		set_death(input, philosopher, index);
@@ -192,23 +219,15 @@ void	*philo_func(void	*args)
 	philosopher = life_args->philosopher;
 	input = life_args->input;
 	index = life_args->index;
-	// printf("hello?\n\n\n");
 	while (any_death(input) == 0)
 	{
-		if (time_taken(philosopher, input) != 0)
-		{
-			set_death(input, philosopher, index);
-			return (NULL);
-		}
-		// printf("hello?\n\n\n");
 		eat(philosopher, input, index);
+		if (any_death(input) != 0)
+			break;
 		action(input, philosopher, index + 1, "is sleeping");
-		sleep_the_action(input->time_to_sleep);
-		if (time_taken(philosopher, input) != 0)
-		{
-			set_death(input, philosopher, index);
-			return (NULL);
-		}
+		sleep_the_action(input->time_to_sleep, philosopher, input);
+		if (any_death(input) != 0)
+			break;
 		action(input, philosopher, index + 1, "is thinking");
 	}
 	return (NULL);
@@ -227,19 +246,16 @@ void	*philo_func_2(void	*args)
 	index = life_args->index;
 	while ((any_death(input) == 0) && (philosopher->meals_had != input->meals))
 	{
-		if (time_taken(philosopher, input) != 0)
-		{
-			set_death(input, philosopher, index);
-			return (NULL);
-		}
 		eat(philosopher, input, index);
+		if (any_death(input) != 0)
+			break;
+		if (philosopher->meals_had == input->meals)
+			break;
 		action(input, philosopher, index + 1, "is sleeping");
-		sleep_the_action(input->time_to_sleep);
-		if (time_taken(philosopher, input) != 0)
-		{
-			set_death(input, philosopher, index);
-			return (NULL);
-		}
+		sleep_the_action(input->time_to_sleep, philosopher, input);
+		// usleep(input->time_to_sleep * 1000);
+		if (any_death(input) != 0)
+			break;
 		action(input, philosopher, index + 1, "is thinking");
 	}
 	return (NULL);
@@ -253,6 +269,8 @@ int	philo_no_stop(t_input *input)
 	i = 0;
 	while (i < input->nb_of_philo)
 	{
+		if (i % 2 != 0)
+			usleep(100);
 		args = malloc(sizeof(t_life_args));
 		if (!args)
 			return (-1);
@@ -265,7 +283,6 @@ int	philo_no_stop(t_input *input)
 			return (-1);
 		}
 		i++;
-		sleep_the_action(1);
 	}
 	i = 0;
 	while (i < input->nb_of_philo)
@@ -285,6 +302,8 @@ int	philo_with_stop(t_input *input)
 	i = 0;
 	while (i < input->nb_of_philo)
 	{
+		if (i % 2 != 0)
+			usleep(100);
 		args = malloc(sizeof(t_life_args));
 		if (!args)
 			return (-1);
@@ -297,7 +316,7 @@ int	philo_with_stop(t_input *input)
 			return (-1);
 		}
 		i++;
-		sleep_the_action(1);
+
 	}
 	i = 0;
 	while (i < input->nb_of_philo)
