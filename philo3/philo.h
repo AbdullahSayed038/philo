@@ -43,7 +43,26 @@ typedef struct s_life_args
 	t_philosopher	*philosopher;
 } t_life_args;
 
+void	ft_bzero(void *s, size_t n);
+ssize_t get_current_time(void);
+void	*philo_func_2(void	*args);
+int	philo_with_stop(t_input *input);
+void	*philo_func(void	*args);
+int	philo_no_stop(t_input *input);
+int	init_input(t_input *input, char **av, int ac);
+int	init_philo(t_input *input);
+ssize_t	init_mutexlocks(t_input *input);
+void	eat(t_philosopher *philosopher, t_input *input, int index);
+int	any_death(t_input *input);
+void	action(t_input *philo, t_philosopher *philosopher, int nb, const char *str);
+void sleep_the_action(int time_in_ms, t_philosopher *philosopher, t_input *input);
+void sleep_the_action2(int time_in_ms, t_philosopher *philosopher, t_input *input);
+ssize_t	get_current_program_time(t_input *philo);
 ssize_t time_taken(t_philosopher *philosopher, t_input *philo);
+int	ft_atoi_philo(char *str);
+void	unset_mutex(t_input *input, t_philosopher *philospher);
+void	*safe_malloc(size_t bytes);
 void 	set_death(t_input *philo, t_philosopher *philosopher, size_t index);
+
 
 #endif
