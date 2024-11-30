@@ -19,6 +19,8 @@ void sleep_the_action2(int time_in_ms, t_philosopher *philosopher, t_input *inpu
 			set_death(input, philosopher, philosopher->id);
 			return;
 		}
+		if (any_death(input) != 0)
+			return ;
 	}
 }
 
@@ -41,6 +43,8 @@ void sleep_the_action(int time_in_ms, t_philosopher *philosopher, t_input *input
 			set_death(input, philosopher, philosopher->id);
 			return;
 		}
+		if (any_death(input) != 0)
+			return ;
 	}
 }
 
@@ -64,8 +68,18 @@ int	any_death(t_input *input)
 
 void	eat(t_philosopher *philosopher, t_input *input, int index)
 {
+	if (any_death(input) != 0)
+	{
+		unset_mutex(input, philosopher);
+		return ;
+	}
 	pthread_mutex_lock(&input->fork[philosopher->left_fork]);
 	action(input, philosopher, index + 1, "has taken a fork");
+	if (any_death(input) != 0)
+	{
+		unset_mutex(input, philosopher);
+		return ;
+	}
 	pthread_mutex_lock(&input->fork[philosopher->right_fork]);
 	action(input, philosopher, index + 1, "has taken a fork");
 	action(input, philosopher, index + 1, "is eating");
@@ -75,6 +89,11 @@ void	eat(t_philosopher *philosopher, t_input *input, int index)
 	if (time_taken(philosopher, input) != 0)
 	{
 		set_death(input, philosopher, index);
+		return ;
+	}
+	if (any_death(input) != 0)
+	{
+		unset_mutex(input, philosopher);
 		return ;
 	}
 	pthread_mutex_unlock(&input->fork[philosopher->left_fork]);

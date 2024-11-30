@@ -15,11 +15,11 @@ void	*philo_func(void	*args)
 	{
 		eat(philosopher, input, index);
 		if (any_death(input) != 0)
-			break;
+			return (NULL);
 		action(input, philosopher, index + 1, "is sleeping");
 		sleep_the_action2(input->time_to_sleep, philosopher, input);
 		if (any_death(input) != 0)
-			break;
+			return (NULL);
 		action(input, philosopher, index + 1, "is thinking");
 	}
 	return (NULL);
