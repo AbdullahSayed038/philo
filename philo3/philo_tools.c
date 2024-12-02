@@ -17,10 +17,12 @@ void sleep_the_action2(int time_in_ms, t_philosopher *philosopher, t_input *inpu
 		if (time_taken(philosopher, input) != 0)
 		{
 			set_death(input, philosopher, philosopher->id);
+			unset_mutex(input, philosopher);
 			return;
 		}
-		if (any_death(input) != 0)
-			return ;
+		if (any_death(input) != 0){
+			unset_mutex(input, philosopher); 
+			break;}
 	}
 }
 
@@ -61,8 +63,13 @@ void	action(t_input *philo, t_philosopher *philosopher, int nb, const char *str)
 
 int	any_death(t_input *input)
 {
+	pthread_mutex_lock(&input->check_death);
 	if (input->dead != 0)
+	{
+		pthread_mutex_unlock(&input->check_death);
 		return (0);
+	}
+	pthread_mutex_unlock(&input->check_death);
 	return (1);
 }
 
@@ -89,6 +96,7 @@ void	eat(t_philosopher *philosopher, t_input *input, int index)
 	if (time_taken(philosopher, input) != 0)
 	{
 		set_death(input, philosopher, index);
+		unset_mutex(input, philosopher);
 		return ;
 	}
 	if (any_death(input) != 0)

@@ -63,5 +63,6 @@ ssize_t	init_mutexlocks(t_input *input)
 			return (-1);
 		i--;
 	}
+	pthread_mutex_init(&(input->check_death), NULL);
 	return (0);
 }
