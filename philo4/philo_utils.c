@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo_utils.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdsayed <abdsayed@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/15 18:56:20 by abdsayed          #+#    #+#             */
+/*   Updated: 2024/12/15 19:07:38 by abdsayed         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
 ssize_t	get_current_program_time(t_input *philo)
@@ -8,10 +20,10 @@ ssize_t	get_current_program_time(t_input *philo)
 	return (current_time);
 }
 
-ssize_t time_taken(t_philosopher *philosopher, t_input *philo)
+ssize_t	time_taken(t_philosopher *philosopher, t_input *philo)
 {
-	ssize_t time;
-	
+	ssize_t	time;
+
 	time = get_current_program_time(philo);
 	if (time - philosopher->time_of_last_meal >= philo->time_to_die)
 		return (true);
@@ -38,7 +50,7 @@ int	ft_atoi_philo(char *str)
 		if ((str[i] >= '0' && str[i] <= '9') && nb <= 2147483647)
 			nb = nb * 10 + (str[i] - '0');
 		else
-			break;
+			break ;
 		i++;
 	}
 	if (nb > 2147483647)
@@ -50,17 +62,18 @@ void	*safe_malloc(size_t bytes)
 {
 	void	*malloced_buffer;
 
-	malloced_buffer = malloc(bytes + (size_t)sizeof(size_t));
+	malloced_buffer = malloc(bytes + (size_t) sizeof(size_t));
 	if (!malloced_buffer)
 		abort();
 	if (!malloced_buffer)
 		return (NULL);
-	ft_bzero(malloced_buffer, bytes + (size_t)sizeof(size_t));
+	ft_bzero(malloced_buffer, bytes + (size_t) sizeof(size_t));
 	return (malloced_buffer);
 }
-void free_all(t_input *input)
+
+void	free_all(t_input *input)
 {
-	int i;
+	int	i;
 
 	if (input->fork)
 	{

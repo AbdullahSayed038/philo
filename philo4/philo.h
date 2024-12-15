@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdsayed <abdsayed@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/15 18:56:16 by abdsayed          #+#    #+#             */
+/*   Updated: 2024/12/15 19:58:49 by abdsayed         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PHILO_H
 # define PHILO_H
 
@@ -36,39 +48,40 @@ typedef struct s_input
 	pthread_mutex_t	*fork;
 	pthread_mutex_t	printing;
 	t_philosopher	*philosophers;
-} t_input;
+}	t_input;
 
-typedef struct s_life_args 
+typedef struct s_life_args
 {
 	int				index;
 	t_input			*input;
 	t_philosopher	*philosopher;
-} t_life_args;
+}	t_life_args;
 
 void	ft_bzero(void *s, size_t n);
-ssize_t get_current_time(void);
+ssize_t	get_current_time(void);
 void	*philo_func_2(void	*args);
-int	philo_with_stop(t_input *input);
+int		philo_with_stop(t_input *input);
 void	*philo_func(void	*args);
-int	philo_no_stop(t_input *input);
-int	init_input(t_input *input, char **av, int ac);
-int	init_philo(t_input *input);
+int		philo_no_stop(t_input *input);
+int		init_input(t_input *input, char **av, int ac);
+int		init_philo(t_input *input);
 ssize_t	init_mutexlocks(t_input *input);
 void	eat(t_philosopher *philosopher, t_input *input, int index);
-int	any_death(t_input *input);
-void	action(t_input *philo, t_philosopher *philosopher, int nb, const char *str);
-void	msleep(t_input *input, size_t ms);
+int		any_death(t_input *input);
+void	action(t_input *philo, int nb, const char *str);
+void	msleep(t_input *input, size_t ms, t_philosopher *philosopher);
 ssize_t	get_current_program_time(t_input *philo);
-ssize_t time_taken(t_philosopher *philosopher, t_input *philo);
-int	ft_atoi_philo(char *str);
+ssize_t	time_taken(t_philosopher *philosopher, t_input *philo);
+int		ft_atoi_philo(char *str);
 void	*safe_malloc(size_t bytes);
-void 	set_death(t_input *philo, t_philosopher *philosopher, size_t index);
+void	set_death(t_input *philo, t_philosopher *philosopher, size_t index);
 void	free_all(t_input *input);
-void 	set_death(t_input *philo, t_philosopher *philosopher, size_t index);
+void	set_death(t_input *philo, t_philosopher *philosopher, size_t index);
 void	release_both_forks(t_input *input, t_philosopher *philosopher);
 void	grab_fork(t_philosopher *philosopher, t_input *input);
 void	grab_second_fork(t_philosopher *philosopher, t_input *input);
 void	release_fork(t_input *input, t_philosopher *philosopher);
 void	release_second_fork(t_input *input, t_philosopher *philosopher);
+void	join_threads(t_input *input);
 
 #endif

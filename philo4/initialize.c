@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   initialize.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdsayed <abdsayed@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/15 18:56:26 by abdsayed          #+#    #+#             */
+/*   Updated: 2024/12/15 19:43:17 by abdsayed         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
 int	init_input(t_input *input, char **av, int ac)
@@ -10,10 +22,14 @@ int	init_input(t_input *input, char **av, int ac)
 	input->food_flag = 0;
 	input->dead = 0;
 	if (ac == 6)
-		input->meals = ft_atoi_philo(av[5]), input->food_flag = 1;
+	{
+		input->meals = ft_atoi_philo(av[5]);
+		input->food_flag = 1;
+	}
 	else
 		input->meals = 0;
-	if (input->nb_of_philo <= 0 || input->time_to_die <= 0 || input->time_to_eat <= 0 || input->time_to_sleep<= 0)
+	if (input->nb_of_philo <= 0 || input->time_to_die <= \
+		0 || input->time_to_eat <= 0 || input->time_to_sleep <= 0)
 		return (-1);
 	if (input->food_flag == 1)
 		if (input->meals <= 0)
@@ -25,7 +41,8 @@ int	init_philo(t_input *input)
 {
 	int	i;
 
-	input->philosophers = safe_malloc(sizeof(t_philosopher) * input->nb_of_philo);
+	input->philosophers = safe_malloc(sizeof(t_philosopher) * \
+		input->nb_of_philo);
 	if (!input->philosophers)
 		return (-1);
 	i = input->nb_of_philo - 1;

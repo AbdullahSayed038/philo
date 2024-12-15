@@ -2,7 +2,7 @@ CC		:= cc
 
 CFLAGS	:= -Wall -Wextra -pthread -g3 -O3
 
-SRCS	:= philo.c initialize.c philo_tools.c philo_utils.c WithEnd.c WithoutEnd.c
+SRCS	:= philo.c initialize.c philo_tools.c philo_utils.c WithEnd.c WithoutEnd.c fork_tools.c
 
 OBJS	:= $(SRCS:.c=.o)
 
