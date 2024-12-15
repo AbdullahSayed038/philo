@@ -6,7 +6,7 @@
 /*   By: abdsayed <abdsayed@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/15 18:56:10 by abdsayed          #+#    #+#             */
-/*   Updated: 2024/12/15 19:59:46 by abdsayed         ###   ########.fr       */
+/*   Updated: 2024/12/15 22:26:05 by abdsayed         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ void	*philo_func(void	*args)
 			break ;
 		action(input, index + 1, "is thinking");
 	}
+	free(args);
 	return (NULL);
 }
 

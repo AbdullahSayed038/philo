@@ -6,7 +6,7 @@
 /*   By: abdsayed <abdsayed@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/15 18:56:18 by abdsayed          #+#    #+#             */
-/*   Updated: 2024/12/15 20:10:30 by abdsayed         ###   ########.fr       */
+/*   Updated: 2024/12/15 22:16:40 by abdsayed         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,26 +50,27 @@ void	solo_dolo(t_input *input)
 int	main(int ac, char **av)
 {
 	t_input	input;
+	int		i;
 
+	i = 0;
 	if (ac != 5 && ac != 6)
 		return (-1);
 	if (init_input(&input, av, ac) != 0)
 		return (-1);
 	if (init_philo(&input) != 0)
-		return (-1);
-	if (init_mutexlocks(&input) != 0)
-		return (-1);
-	if (input.nb_of_philo == 1)
-		solo_dolo(&input);
-	else if (input.food_flag == 0)
+		i = -1;
+	if (input.nb_of_philo == 1 && i == 0)
+		solo_dolo(&input), free_all(&input);
+	else if (input.food_flag == 0 && i == 0)
 	{
 		if (philo_no_stop(&input) != 0)
-			free_all(&input);
+			i = -1;
 	}
-	else
+	else if (i == 0)
 	{
 		if (philo_with_stop(&input) != 0)
-			return (-1);
+			i = -1;
 	}
-	return (0);
+	free_all(&input);
+	return (i);
 }

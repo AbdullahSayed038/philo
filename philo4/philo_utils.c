@@ -6,7 +6,7 @@
 /*   By: abdsayed <abdsayed@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/15 18:56:20 by abdsayed          #+#    #+#             */
-/*   Updated: 2024/12/15 19:07:38 by abdsayed         ###   ########.fr       */
+/*   Updated: 2024/12/15 22:12:34 by abdsayed         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@ void	free_all(t_input *input)
 		free(input->fork);
 		input->fork = NULL;
 	}
+	i = 0;
 	if (input->fork_check)
 	{
 		free(input->fork_check);
@@ -93,7 +94,7 @@ void	free_all(t_input *input)
 	}
 	pthread_mutex_destroy(&input->printing);
 	pthread_mutex_destroy(&input->check_death);
-	if (input->philosophers)
+	while (input->philosophers)
 	{
 		free(input->philosophers);
 		input->philosophers = NULL;

@@ -6,7 +6,7 @@
 /*   By: abdsayed <abdsayed@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/15 18:56:26 by abdsayed          #+#    #+#             */
-/*   Updated: 2024/12/15 19:43:17 by abdsayed         ###   ########.fr       */
+/*   Updated: 2024/12/15 22:15:41 by abdsayed         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ int	init_philo(t_input *input)
 	input->fork_check = safe_malloc(sizeof(int) * input->nb_of_philo);
 	if (!input->fork)
 		return (-1);
-	return (0);
+	return (init_mutexlocks(input));
 }
 
 ssize_t	init_mutexlocks(t_input *input)
