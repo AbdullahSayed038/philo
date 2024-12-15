@@ -13,9 +13,9 @@ ssize_t time_taken(t_philosopher *philosopher, t_input *philo)
 	ssize_t time;
 	
 	time = get_current_program_time(philo);
-	if (time - philosopher->time_of_last_meal > philo->time_to_die)
-		return 1;
-	return 0;
+	if (time - philosopher->time_of_last_meal >= philo->time_to_die)
+		return (true);
+	return (false);
 }
 
 int	ft_atoi_philo(char *str)

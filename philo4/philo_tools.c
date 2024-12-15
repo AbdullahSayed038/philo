@@ -6,7 +6,7 @@ void	msleep(t_input *input, size_t ms)
 	size_t	start;
 
 	start = get_current_program_time(input);
-	while (!any_death(input) && ((get_current_program_time(input) - start) < ms))
+	while (any_death(input) == false && ((get_current_program_time(input) - start) < ms))
 		usleep(100);
 }
 
@@ -33,7 +33,7 @@ int	any_death(t_input *input)
 	return (false);
 }
 
-void	grab_fork(t_philosopher *philosopher, t_input *input, int index)
+void	grab_fork(t_philosopher *philosopher, t_input *input)
 {
 	while (any_death(input) == false)
 	{
@@ -49,7 +49,7 @@ void	grab_fork(t_philosopher *philosopher, t_input *input, int index)
 	}
 }
 
-void	grab_second_fork(t_philosopher *philosopher, t_input *input, int index)
+void	grab_second_fork(t_philosopher *philosopher, t_input *input)
 {
 	while (any_death(input) == false)
 	{
@@ -91,13 +91,13 @@ void	eat(t_philosopher *philosopher, t_input *input, int index)
 		return ;
 	if (index % 2 == 0)
 	{
-		grab_second_fork(philosopher, input, index);
-		grab_fork(philosopher, input, index);
+		grab_second_fork(philosopher, input);
+		grab_fork(philosopher, input);
 	}
 	else
 	{
-		grab_fork(philosopher, input, index);
-		grab_second_fork(philosopher, input, index);
+		grab_fork(philosopher, input);
+		grab_second_fork(philosopher, input);
 	}
 	if (any_death(input) == true)
 	{
@@ -110,5 +110,7 @@ void	eat(t_philosopher *philosopher, t_input *input, int index)
 	philosopher->meals_had++;
 	philosopher->time_of_last_meal = get_current_program_time(input);
 	msleep(input, input->time_to_eat);
+	if (time_taken(philosopher, input) == true)
+		set_death(input, philosopher, index);
 	release_both_forks(input, philosopher);
 }

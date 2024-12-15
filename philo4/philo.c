@@ -27,6 +27,13 @@ void	ft_bzero(void *s, size_t n)
 		*(unsigned char *)s++ = 0;
 }
 
+void	solo_dolo(t_input *input)
+{
+	action(input, NULL, 1, "has taken a fork");
+	msleep(input, input->time_to_die);
+	action(input, NULL, 1, "has died");
+}
+
 int main(int ac, char **av)
 {
 	t_input input;
@@ -39,7 +46,9 @@ int main(int ac, char **av)
 		return (-1);
 	if (init_mutexlocks(&input) != 0)
 		return (-1);
-	if (input.food_flag == 0)
+	if (input.nb_of_philo == 1)
+		solo_dolo(&input);
+	else if (input.food_flag == 0)
 	{
 		if (philo_no_stop(&input) != 0)
 			free_all(&input);

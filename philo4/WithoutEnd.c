@@ -18,6 +18,8 @@ void	*philo_func(void	*args)
 			break;
 		action(input, philosopher, index + 1, "is sleeping");
 		msleep(input, input->time_to_sleep);
+		if (time_taken(philosopher, input) == true)
+			set_death(input, philosopher, index);
 		if (any_death(input) == true)
 			break;
 		action(input, philosopher, index + 1, "is thinking");

@@ -66,5 +66,9 @@ void 	set_death(t_input *philo, t_philosopher *philosopher, size_t index);
 void	free_all(t_input *input);
 void 	set_death(t_input *philo, t_philosopher *philosopher, size_t index);
 void	release_both_forks(t_input *input, t_philosopher *philosopher);
+void	grab_fork(t_philosopher *philosopher, t_input *input);
+void	grab_second_fork(t_philosopher *philosopher, t_input *input);
+void	release_fork(t_input *input, t_philosopher *philosopher);
+void	release_second_fork(t_input *input, t_philosopher *philosopher);
 
 #endif
