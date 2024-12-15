@@ -76,34 +76,47 @@ int	any_death(t_input *input)
 void	eat(t_philosopher *philosopher, t_input *input, int index)
 {
 	if (any_death(input) != 0)
-	{
-		unset_mutex(input, philosopher);
 		return ;
-	}
+	if (input->fork_check[philosopher->left_fork] == 1)
+		while (input->fork_check[philosopher->left_fork] == 1)
+			usleep(10);
 	pthread_mutex_lock(&input->fork[philosopher->left_fork]);
+	input->fork_check[philosopher->left_fork] = 1;
+	pthread_mutex_unlock(&input->fork[philosopher->left_fork]);
 	action(input, philosopher, index + 1, "has taken a fork");
 	if (any_death(input) != 0)
 	{
-		unset_mutex(input, philosopher);
+		pthread_mutex_lock(&input->fork[philosopher->left_fork]);
+		input->fork_check[philosopher->left_fork] = 0;
+		pthread_mutex_unlock(&input->fork[philosopher->left_fork]);
 		return ;
 	}
+	if (input->fork_check[philosopher->right_fork] == 1)
+		while (input->fork_check[philosopher->right_fork] == 1)
+			usleep(10);
 	pthread_mutex_lock(&input->fork[philosopher->right_fork]);
+	input->fork_check[philosopher->right_fork] = 1;
 	action(input, philosopher, index + 1, "has taken a fork");
-	action(input, philosopher, index + 1, "is eating");
+	pthread_mutex_unlock(&input->fork[philosopher->right_fork]);
+	action(input, philosopher, index + 1, "is eating"); 
 	philosopher->meals_had++;
 	philosopher->time_of_last_meal = get_current_program_time(input);
 	sleep_the_action(input->time_to_eat, philosopher, input);
 	if (time_taken(philosopher, input) != 0)
 	{
+		pthread_mutex_lock(&input->fork[philosopher->left_fork]);
+		input->fork_check[philosopher->left_fork] = 0;
+		pthread_mutex_unlock(&input->fork[philosopher->left_fork]);
+		pthread_mutex_lock(&input->fork[philosopher->right_fork]);
+		input->fork_check[philosopher->right_fork] = 0;
+		pthread_mutex_unlock(&input->fork[philosopher->right_fork]);
 		set_death(input, philosopher, index);
-		unset_mutex(input, philosopher);
 		return ;
 	}
-	if (any_death(input) != 0)
-	{
-		unset_mutex(input, philosopher);
-		return ;
-	}
+	pthread_mutex_lock(&input->fork[philosopher->left_fork]);
+	input->fork_check[philosopher->left_fork] = 0;
 	pthread_mutex_unlock(&input->fork[philosopher->left_fork]);
+	pthread_mutex_lock(&input->fork[philosopher->right_fork]);
+	input->fork_check[philosopher->right_fork] = 0;
 	pthread_mutex_unlock(&input->fork[philosopher->right_fork]);
 }

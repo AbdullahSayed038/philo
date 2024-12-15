@@ -8,6 +8,7 @@
 # include <string.h>
 # include <pthread.h>
 # include <limits.h>
+# include <stdbool.h>
 
 typedef struct s_philosopher
 {
@@ -29,6 +30,7 @@ typedef struct s_input
 	int				time_to_sleep;
 	int				meals;
 	int				dead;
+	int				*fork_check;
 	ssize_t			program_start_time;
 	pthread_mutex_t	check_death;
 	pthread_mutex_t	*fork;
