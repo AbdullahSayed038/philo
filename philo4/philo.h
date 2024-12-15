@@ -65,5 +65,6 @@ void	*safe_malloc(size_t bytes);
 void 	set_death(t_input *philo, t_philosopher *philosopher, size_t index);
 void	free_all(t_input *input);
 void 	set_death(t_input *philo, t_philosopher *philosopher, size_t index);
+void	release_both_forks(t_input *input, t_philosopher *philosopher);
 
 #endif

@@ -35,37 +35,33 @@ int	any_death(t_input *input)
 
 void	grab_fork(t_philosopher *philosopher, t_input *input, int index)
 {
-	int	claimed;
-
-	(void)index;
-	claimed = 0;
-	while (any_death(input) == false && !claimed)
+	while (any_death(input) == false)
 	{
 		pthread_mutex_lock(&input->fork[philosopher->left_fork]);
-		claimed = input->fork_check[philosopher->left_fork];
-		if (claimed == 0)
+		if (input->fork_check[philosopher->left_fork] == 0)
+		{
 			input->fork_check[philosopher->left_fork] = 1;
+			pthread_mutex_unlock(&input->fork[philosopher->left_fork]);
+			break;
+		}
 		pthread_mutex_unlock(&input->fork[philosopher->left_fork]);
-		if (!claimed)
-			usleep(100);
+		usleep(100);
 	}
 }
 
 void	grab_second_fork(t_philosopher *philosopher, t_input *input, int index)
 {
-	int	claimed;
-
-	(void)index;
-	claimed = 0;
-	while (any_death(input) == false && !claimed)
+	while (any_death(input) == false)
 	{
 		pthread_mutex_lock(&input->fork[philosopher->right_fork]);
-		claimed = input->fork_check[philosopher->right_fork];
-		if (claimed == 0)
+		if (input->fork_check[philosopher->right_fork] == 0)
+		{
 			input->fork_check[philosopher->right_fork] = 1;
+			pthread_mutex_unlock(&input->fork[philosopher->right_fork]);
+			break;
+		}
 		pthread_mutex_unlock(&input->fork[philosopher->right_fork]);
-		if (!claimed)
-			usleep(100);
+		usleep(100);
 	}
 }
 
@@ -83,36 +79,36 @@ void	release_second_fork(t_input *input, t_philosopher *philosopher)
 	pthread_mutex_unlock(&input->fork[philosopher->right_fork]);
 }
 
+void	release_both_forks(t_input *input, t_philosopher *philosopher)
+{
+	release_fork(input, philosopher);
+	release_second_fork(input, philosopher);
+}
+
 void	eat(t_philosopher *philosopher, t_input *input, int index)
 {
 	if (any_death(input) == true)
 		return ;
-	grab_fork(philosopher, input, index);
+	if (index % 2 == 0)
+	{
+		grab_second_fork(philosopher, input, index);
+		grab_fork(philosopher, input, index);
+	}
+	else
+	{
+		grab_fork(philosopher, input, index);
+		grab_second_fork(philosopher, input, index);
+	}
 	if (any_death(input) == true)
 	{
-		release_fork(input, philosopher);
+		release_both_forks(input, philosopher);
 		return ;
 	}
 	action(input, philosopher, index + 1, "has taken a fork");
-	grab_second_fork(philosopher, input, index);
-	if (any_death(input) == true)
-	{
-		release_fork(input, philosopher);
-		release_second_fork(input, philosopher);
-		return ;
-	}
 	action(input, philosopher, index + 1, "has taken a fork");
-	action(input, philosopher, index + 1, "is eating"); 
+	action(input, philosopher, index + 1, "is eating");
 	philosopher->meals_had++;
 	philosopher->time_of_last_meal = get_current_program_time(input);
 	msleep(input, input->time_to_eat);
-	if (time_taken(philosopher, input) != 0)
-	{
-		release_fork(input, philosopher);
-		release_second_fork(input, philosopher);
-		set_death(input, philosopher, index);
-		return ;
-	}
-	release_fork(input, philosopher);
-	release_second_fork(input, philosopher);
+	release_both_forks(input, philosopher);
 }
