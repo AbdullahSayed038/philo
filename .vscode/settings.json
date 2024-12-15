@@ -1,6 +1,8 @@
 {
 	"files.associations": {
 		"__mutex_base": "c",
-		"chrono": "c"
+		"chrono": "c",
+		"__locale": "c",
+		"locale": "c"
 	}
 }

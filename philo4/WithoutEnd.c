@@ -11,19 +11,15 @@ void	*philo_func(void	*args)
 	philosopher = life_args->philosopher;
 	input = life_args->input;
 	index = life_args->index;
-	while (any_death(input) == 0)
+	while (any_death(input) == false)
 	{
 		eat(philosopher, input, index);
-		if (any_death(input) != 0)
-		{
-			unset_mutex(input, philosopher); 
+		if (any_death(input) == true)
 			break;
-			}
 		action(input, philosopher, index + 1, "is sleeping");
-		sleep_the_action2(input->time_to_sleep, philosopher, input);
-		if (any_death(input) != 0){
-			unset_mutex(input, philosopher); 
-			break;}
+		msleep(input, input->time_to_sleep);
+		if (any_death(input) == true)
+			break;
 		action(input, philosopher, index + 1, "is thinking");
 	}
 	return (NULL);
@@ -38,7 +34,7 @@ int	philo_no_stop(t_input *input)
 	while (i < input->nb_of_philo)
 	{
 		if (i % 2 != 0)
-			usleep(100);
+			usleep(1000);
 		args = malloc(sizeof(t_life_args));
 		if (!args)
 			return (-1);

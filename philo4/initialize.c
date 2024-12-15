@@ -8,6 +8,7 @@ int	init_input(t_input *input, char **av, int ac)
 	input->time_to_sleep = ft_atoi_philo(av[4]);
 	input->program_start_time = get_current_time();
 	input->food_flag = 0;
+	input->dead = 0;
 	if (ac == 6)
 		input->meals = ft_atoi_philo(av[5]), input->food_flag = 1;
 	else
