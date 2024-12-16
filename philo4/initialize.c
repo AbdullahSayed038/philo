@@ -6,7 +6,7 @@
 /*   By: abdsayed <abdsayed@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/15 18:56:26 by abdsayed          #+#    #+#             */
-/*   Updated: 2024/12/15 22:15:41 by abdsayed         ###   ########.fr       */
+/*   Updated: 2024/12/16 16:23:21 by abdsayed         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,10 +41,10 @@ int	init_philo(t_input *input)
 {
 	int	i;
 
-	input->philosophers = safe_malloc(sizeof(t_philosopher) * \
-		input->nb_of_philo);
+	input->philosophers = safe_malloc(sizeof(t_philosopher) * input->nb_of_philo);
 	if (!input->philosophers)
 		return (-1);
+
 	i = input->nb_of_philo - 1;
 	while (i >= 0)
 	{
@@ -57,8 +57,10 @@ int	init_philo(t_input *input)
 	}
 	input->fork = safe_malloc(sizeof(pthread_mutex_t) * input->nb_of_philo);
 	input->fork_check = safe_malloc(sizeof(int) * input->nb_of_philo);
-	if (!input->fork)
+	input->meal_increase = safe_malloc(sizeof(pthread_mutex_t) * input->nb_of_philo);
+	if (!input->fork || !input->meal_increase)
 		return (-1);
+
 	return (init_mutexlocks(input));
 }
 
@@ -71,17 +73,15 @@ ssize_t	init_mutexlocks(t_input *input)
 	{
 		if (pthread_mutex_init(&(input->fork[i]), NULL))
 			return (-1);
-		i--;
-	}
-	if (pthread_mutex_init(&(input->printing), NULL))
-		return (1);
-	i = input->nb_of_philo - 1;
-	while (i >= 0)
-	{
-		if (pthread_mutex_init(&(input->fork[i]), NULL))
+		if (pthread_mutex_init(&(input->meal_increase[i]), NULL)) // Initialize meal_increase mutexes
 			return (-1);
 		i--;
 	}
-	pthread_mutex_init(&(input->check_death), NULL);
+	if (pthread_mutex_init(&(input->printing), NULL))
+		return (-1);
+
+	if (pthread_mutex_init(&(input->check_death), NULL))
+		return (-1);
+
 	return (0);
 }

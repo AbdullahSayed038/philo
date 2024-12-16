@@ -6,7 +6,7 @@
 /*   By: abdsayed <abdsayed@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/15 18:56:16 by abdsayed          #+#    #+#             */
-/*   Updated: 2024/12/15 22:25:35 by abdsayed         ###   ########.fr       */
+/*   Updated: 2024/12/16 18:24:59 by abdsayed         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ typedef struct s_input
 	ssize_t			program_start_time;
 	pthread_mutex_t	check_death;
 	pthread_mutex_t	*fork;
+	pthread_mutex_t	*meal_increase;
 	pthread_mutex_t	printing;
 	t_philosopher	*philosophers;
 }	t_input;
@@ -83,5 +84,7 @@ void	grab_second_fork(t_philosopher *philosopher, t_input *input);
 void	release_fork(t_input *input, t_philosopher *philosopher);
 void	release_second_fork(t_input *input, t_philosopher *philosopher);
 void	join_threads(t_input *input);
+void	check_if_greedy(t_input *input, t_philosopher *philosopher);
+void	wait_for_turn(t_input *input, t_philosopher *philosopher, bool wait_for_left);
 
 #endif

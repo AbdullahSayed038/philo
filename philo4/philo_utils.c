@@ -6,7 +6,7 @@
 /*   By: abdsayed <abdsayed@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/15 18:56:20 by abdsayed          #+#    #+#             */
-/*   Updated: 2024/12/15 22:12:34 by abdsayed         ###   ########.fr       */
+/*   Updated: 2024/12/16 16:24:11 by abdsayed         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,8 +64,6 @@ void	*safe_malloc(size_t bytes)
 
 	malloced_buffer = malloc(bytes + (size_t) sizeof(size_t));
 	if (!malloced_buffer)
-		abort();
-	if (!malloced_buffer)
 		return (NULL);
 	ft_bzero(malloced_buffer, bytes + (size_t) sizeof(size_t));
 	return (malloced_buffer);
@@ -86,7 +84,17 @@ void	free_all(t_input *input)
 		free(input->fork);
 		input->fork = NULL;
 	}
-	i = 0;
+	if (input->meal_increase)
+	{
+		i = 0;
+		while (i < input->nb_of_philo)
+		{
+			pthread_mutex_destroy(&input->meal_increase[i]);
+			i++;
+		}
+		free(input->meal_increase);
+		input->meal_increase = NULL;
+	}
 	if (input->fork_check)
 	{
 		free(input->fork_check);

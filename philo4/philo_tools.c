@@ -6,7 +6,7 @@
 /*   By: abdsayed <abdsayed@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/15 18:56:22 by abdsayed          #+#    #+#             */
-/*   Updated: 2024/12/15 19:59:21 by abdsayed         ###   ########.fr       */
+/*   Updated: 2024/12/16 18:25:21 by abdsayed         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,4 +77,55 @@ void	eat(t_philosopher *philosopher, t_input *input, int index)
 	if (time_taken(philosopher, input) == true)
 		set_death(input, philosopher, index);
 	release_both_forks(input, philosopher);
+}
+
+void	check_if_greedy(t_input *input, t_philosopher *philosopher)
+{
+	int	left_id;
+	int	right_id;
+
+	left_id = (philosopher->id - 1 + input->nb_of_philo) % input->nb_of_philo;
+	right_id = (philosopher->id + 1) % input->nb_of_philo;
+	if (philosopher->id < right_id) 
+	{
+		pthread_mutex_lock(&input->meal_increase[philosopher->id]);
+		pthread_mutex_lock(&input->meal_increase[right_id]);
+	} else 
+	{
+		pthread_mutex_lock(&input->meal_increase[right_id]);
+		pthread_mutex_lock(&input->meal_increase[philosopher->id]);
+	}
+	if (input->philosophers[philosopher->id].meals_had > input->philosophers[right_id].meals_had)
+		wait_for_turn(input, philosopher, right_id);
+	pthread_mutex_unlock(&input->meal_increase[right_id]);
+	pthread_mutex_lock(&input->meal_increase[left_id]);
+	if (input->philosophers[philosopher->id].meals_had > input->philosophers[left_id].meals_had)
+		wait_for_turn(input, philosopher, left_id);
+	pthread_mutex_unlock(&input->meal_increase[left_id]);
+	pthread_mutex_unlock(&input->meal_increase[philosopher->id]);
+}
+
+
+void	wait_for_turn(t_input *input, t_philosopher *philosopher, bool wait_for_left)
+{
+	int	neighbor_id;
+
+	if (wait_for_left)
+		neighbor_id = (philosopher->id - 1 + input->nb_of_philo) % input->nb_of_philo;
+	else
+		neighbor_id = (philosopher->id + 1) % input->nb_of_philo;
+	while (any_death(input) == false)
+	{
+		if (time_taken(philosopher, input) == true)
+			set_death(input, philosopher, philosopher->id);
+		
+		pthread_mutex_lock(&input->fork[neighbor_id]);
+		if (input->fork_check[neighbor_id] == 1)
+		{
+			pthread_mutex_unlock(&input->fork[neighbor_id]);
+			break ;
+		}
+		pthread_mutex_unlock(&input->fork[neighbor_id]);
+		usleep(100);
+	}
 }
