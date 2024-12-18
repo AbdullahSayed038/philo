@@ -6,7 +6,7 @@
 /*   By: abdsayed <abdsayed@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/15 18:56:22 by abdsayed          #+#    #+#             */
-/*   Updated: 2024/12/15 19:59:21 by abdsayed         ###   ########.fr       */
+/*   Updated: 2024/12/18 14:24:23 by abdsayed         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,12 @@ void	action(t_input *philo, int nb, const char *str)
 	ssize_t	time;
 
 	time = get_current_program_time(philo);
+	pthread_mutex_lock(&philo->check_death);
 	pthread_mutex_lock(&philo->printing);
-	printf("%zi %i %s\n", time, nb, str);
+	if (philo->dead == 0)
+		printf("%zi %i %s\n", time, nb, str);
 	pthread_mutex_unlock(&philo->printing);
+	pthread_mutex_unlock(&philo->check_death);
 }
 
 int	any_death(t_input *input)

@@ -6,7 +6,7 @@
 /*   By: abdsayed <abdsayed@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/15 18:56:18 by abdsayed          #+#    #+#             */
-/*   Updated: 2024/12/15 22:16:40 by abdsayed         ###   ########.fr       */
+/*   Updated: 2024/12/18 14:28:17 by abdsayed         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,17 @@ ssize_t	get_current_time(void)
 
 void	set_death(t_input *philo, t_philosopher *philosopher, size_t index)
 {
-	(void)philosopher;
+	ssize_t	time;
+
+	(void)index;
+	time = get_current_program_time(philo);
 	pthread_mutex_lock(&philo->check_death);
 	if (philo->dead == 0)
 	{
 		philo->dead = 1;
-		action(philo, index + 1, "died");
+		pthread_mutex_lock(&philo->printing);
+		printf("%zi %i %s\n", time, philosopher->id + 1, "has died");
+		pthread_mutex_unlock(&philo->printing);
 	}
 	pthread_mutex_unlock(&philo->check_death);
 }
