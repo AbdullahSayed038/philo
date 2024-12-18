@@ -6,7 +6,7 @@
 /*   By: abdsayed <abdsayed@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/15 18:56:10 by abdsayed          #+#    #+#             */
-/*   Updated: 2024/12/15 22:26:05 by abdsayed         ###   ########.fr       */
+/*   Updated: 2024/12/18 11:45:52 by abdsayed         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ void	*philo_func(void	*args)
 		if (any_death(input) == true)
 			break ;
 		action(input, index + 1, "is thinking");
+		usleep(1000);
 	}
 	free(args);
 	return (NULL);
